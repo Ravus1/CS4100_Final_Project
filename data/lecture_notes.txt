@@ -1,0 +1,22 @@
+This is a sample lecture note.
+Natural Language Processing (NLP) is a subfield of artificial intelligence (AI).
+It is concerned with the interaction between computers and humans in natural language.
+The ultimate objective of NLP is to read, decipher, understand, and make sense of the human languages in a manner that is valuable.
+NLTK is a powerful library for NLP.
+Scikit-learn is a great tool for machine learning.
+This project will use these tools to summarize text.
+Summarization is the task of producing a concise and fluent summary while preserving key information content and overall meaning.
+There are two main types of summarization: extractive and abstractive.
+Extractive summarization selects important sentences from the original text.
+Abstractive summarization generates new sentences.
+This project will focus on extractive summarization.
+Random forests are an ensemble learning method for classification, regression and other tasks.
+They operate by constructing a multitude of decision trees at training time.
+For classification tasks, the output of the random forest is the class selected by most trees.
+TF-IDF, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
+It is often used as a weighting factor in searches of information retrieval, text mining, and user modeling.
+The tf–idf value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general.
+This is a sample text for the lecture notes summarizer.
+It contains multiple sentences on different topics related to NLP and machine learning.
+The goal is to see how the summarizer works on this text.
+The end.
