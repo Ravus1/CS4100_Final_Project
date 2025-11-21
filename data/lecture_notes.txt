@@ -1,22 +1,88 @@
-This is a sample lecture note.
-Natural Language Processing (NLP) is a subfield of artificial intelligence (AI).
-It is concerned with the interaction between computers and humans in natural language.
-The ultimate objective of NLP is to read, decipher, understand, and make sense of the human languages in a manner that is valuable.
-NLTK is a powerful library for NLP.
-Scikit-learn is a great tool for machine learning.
-This project will use these tools to summarize text.
-Summarization is the task of producing a concise and fluent summary while preserving key information content and overall meaning.
-There are two main types of summarization: extractive and abstractive.
-Extractive summarization selects important sentences from the original text.
-Abstractive summarization generates new sentences.
-This project will focus on extractive summarization.
-Random forests are an ensemble learning method for classification, regression and other tasks.
-They operate by constructing a multitude of decision trees at training time.
-For classification tasks, the output of the random forest is the class selected by most trees.
-TF-IDF, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
-It is often used as a weighting factor in searches of information retrieval, text mining, and user modeling.
-The tf–idf value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general.
-This is a sample text for the lecture notes summarizer.
-It contains multiple sentences on different topics related to NLP and machine learning.
-The goal is to see how the summarizer works on this text.
-The end.
+The preceding discussions on search algorithms delved into methods for traversing state-space graphs from an initial state to a goal, emphasizing the construction and the preservation of a path throughout the process. However, many real-life problems do not focus on the specific path taken to reach the goal. Examples of such problems include job-shop scheduling, automatic programming, telecommunications network optimization, vehicle routing, and portfolio management. In these cases, the focus is primarily on the final configuration of the solution, rather than the journey taken to attain it.
+
+With this in mind, we now turn our attention to local search methods. Unlike their counterparts, local searches operate exclusively on the current node, often choosing to evaluate its immediate neighbors without retaining any path in memory. Local search algorithms offer two key advantages in scenarios where the path to the goal is inconsequential:
+
+Lower memory requirements : since they only operate on a singular node and are not retaining paths while progressing through the state space, these algorithms usually have a constant space complexity.
+
+Continuous states : they can find reasonable solutions in infinite state spaces which classical search algorithms are not well-suited to. Local searches achieve this by moving in small steps towards a specific direction to either maximize or minimize an objective in a continuous space.
+Thanks to these advantages, local searches prove particularly useful for optimization problems. Typically, these problems feature a continuous state-space landscape characterized by both a location and an elevation, represented by a heuristic or a cost function specific to the problem.
+Hill Climbing
+Hill-climbing is a type of local search algorithm. Hill climbing iteratively moves in either an increasing/ascent or decreasing/descent direction based on the problem objective. The algorithm terminates when it reaches a "peak" in case of a maximization problem, i.e., no neighbor has a higher objective function value, or a "valley," when the neighbor has no lower value in case of a minimization problem. Hill-climbing can be summarized with the following general structure:
+
+function STEEPEST-ASCENT-HILL-CLIMBING(G, s, goal):
+    current = s
+    while True:
+        neighbors = get_neighbors(G, current)
+        best_neighbor = None
+        best_value = calculate_value(current) 
+        for neighbor in neighbors:
+            neighbor_value = calculate_value(neighbor)
+            if neighbor_value > best_value: 
+                best_neighbor = neighbor
+                best_value = neighbor_value
+        if best_neighbor is None or best_value <= calculate_value(current):
+            return current
+        current = best_neighbor
+This particular approach is one of several related variants of hill-climbing, and is called Steepest-Ascent Hill Climbing. Here, we iterate over all neighbors to pick the best one at each step. However, this approach can be prohibitively expensive, if the number of neighboring states is large.
+ Think about designing a pizza where a “neighbor” is any topping change on a menu of 40 toppings. One move can be to add, remove, or swap a topping which would essentially yield hundreds of possible neighbors at every step. These are far too many to check exhaustively.
+Therefore, in most discrete environments (at least within the scope of CS4100/CS5100), we rarely, if ever, use Steepest-Ascent Hill Climbing, although we will return to a continuous-space version of this idea later in the semester when dealing with machine learning.
+In contrast, another commonly seen implementation is to generate a neighboring state, and simply accept it if the score is better than the current state, rather than iterating over all neighbors to find the best one. This latter approach is known as First-Choice Hill Climbing. Although it overlooks the single best neighbor at each step, it can be much faster and often reaches a good local minima in practice, typically converging quicker because each accepted move strictly improves the objective. This version of hill-climbing can be summarized with the following general structure:
+
+function FIRST-CHOICE-HILL-CLIMBING(G, s, goal):
+    current = s
+    while True:
+        neighbor = get_random_neighbor(G, current)
+        if neighbor is None:
+            return current
+        if calculate_value(neighbor) > calculate_value(current):
+            current = neighbor
+In this approach, note that 'get_random_neighbor' generates one random but valid neighbor of the current state at each iteration. As it so happens, First-Choice Hill Climbing is a special case of the more general form, Stochastic Hill Climbing. This final variant incorporates randomness in a slightly different way; it chooses randomly among all uphill/downhill moves, with the probability of selecting a particular move varying with the steepness of the ascent/descent. A good way to do this is to assign each improving neighbor a probability proportional to its score increase and then draw the next move using a weighted random choice. This just means that steeper moves are more likely to be chosen, but all score improving moves have some chance associated with them. This can be summarized using the following structure:
+
+function STOCHASTIC_HILL_CLIMBING(G, start, goal):
+    current = start
+    
+    while True:
+        neighbors = get_neighbors(G, current)
+        if not neighbors:
+            return current  
+        
+        # Store neighbors that have an uphill ascent.
+        improving_neighbors = []
+        improvements = []
+        for neighbor in neighbors:
+            delta = score(neighbor) - score(current)
+            # Choose to keep neighbors that have an uphill direction.
+            if delta > 0:
+                improving_neighbors.append(neighbor)
+                improvements.append(delta)
+        
+        total = sum(improvements)
+        # Varying probabilities for each of the improving neighbors.
+        probabilities = [imp / total for imp in improvements]
+        current = random_choice(choices=improving_neighbors, weights=probabilities)
+Local Optima
+Hill-climbing approaches, while often effective, may fail to produce an optimal solution in certain instances. This may happen as a result of the search getting stuck in a local optimum. This can be thought of as exploring the "landscape" of an objective function in an 
+-dimensional vector space. The objective function's landscape may have several points of inflection, causing the search to get trapped in a "valley" (local minimum) or a "peak" (local maximum). Since our local search only moves in one direction, it may completely miss better solutions (deeper valleys or taller peaks) as a result of this.
+
+Ridges: Ridges are sequences of local optima. The presence of multiple local optima makes it challenging for the algorithm to navigate and converge towards a global optimum, as it may become trapped in one of the multiple vicinities.
+
+Plateaus: A plateau refers to a flat area in the state-space landscape, which can be a flat local optimum or a shoulder from which some future progress is posible. Plateaus pose challenges for hill-climbing algorithms as there might be cases where no successor value is available for the algorithm to choose from, resulting in being stranded without further progress.
+
+Dealing with Local Optima: Here, we discuss two commonly used strategies for dealing with local optima. To motivate both strategies, consider the following objective function (
+), plotted below.
+
+
+If we start at 
+ and attempt to maximize our objective, then hill-climbing leads us to the local maximum at 
+, whereas the global maximum lies at 
+. This is a result of the algorithm being stuck in a local optimum. However, if we had either started at 
+, or had somehow been able to move from the local optimum to 
+, then we could have subsequently reached the global maximum.
+
+Random Restarts: One of the most popular methods to circumvent getting stuck in local optima is to randomly restart the hill-climbing process with a different initial state. In the above example, if the first run started at 
+, then a random restart could, in theory, get us to start from, say, 
+ (really any value on either slope of the optimal peak), which would lead us to the global optimum.
+
+Random Downhill Steps: A second way to wiggle our way out of local optima is to allow steps that lead to a worse objective function value with a small probability. In the above example, from the local optimum peak around 
+, if we allowed the search algorithm to accept a neighbor on its right (combined with the step-size being large enough), then a subsequent step could get us to the global optimum. This approach is also known as Stochastic Hill Climbing.
+
