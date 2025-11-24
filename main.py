@@ -30,8 +30,8 @@ def main():
         hf_dataset_name="TanveerAman/AMI-Corpus-Text-Summarization",
         hf_text_field="Dialogue",
         hf_summary_field="Summaries",
-        hf_split="train[:100]",
-        sample_size=200,
+        hf_split="train[:500]",
+        sample_size=400,
     )
 
     if not sentences:

@@ -10,7 +10,9 @@ try:
 except LookupError:
     nltk.download('punkt')
 
-def load_and_process_cnn_dailymail(sample_size=100):
+MAX_SENTENCES_PER_DOC = 120
+
+def load_and_process_cnn_dailymail(sample_size=400):
     """
     Downloads and processes the CNN/Daily Mail dataset.
     It programmatically labels sentences based on their ROUGE score
@@ -34,15 +36,18 @@ def load_and_process_cnn_dailymail(sample_size=100):
         summary_text = example['highlights']
         
         sentences = nltk.sent_tokenize(article_text)
+        # Optionally cap very long articles so more documents contribute
+        if len(sentences) > MAX_SENTENCES_PER_DOC:
+            sentences = sentences[:MAX_SENTENCES_PER_DOC]
         if not sentences:
             continue
 
         # Calculate ROUGE scores for each sentence against the summary
         scores = [scorer.score(summary_text, sent)['rougeL'].fmeasure for sent in sentences]
         
-        # Simple labeling strategy: label the top 3 sentences with the highest ROUGE scores as important
-        # In a more advanced scenario, you might use a threshold or a more sophisticated method.
-        top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:3]
+        # Label more sentences per document as important (increase top-k)
+        k = min(5, len(sentences))
+        top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
         
         labels = [1 if i in top_indices else 0 for i in range(len(sentences))]
 
@@ -57,7 +62,7 @@ def load_and_process_hf_summarization_dataset(
     config_name=None,
     text_field="document",
     summary_field="summary",
-    split="train[:100]"
+    split="train[:500]"
 ):
     """
     Generic loader for Hugging Face text+summary datasets.
@@ -84,6 +89,9 @@ def load_and_process_hf_summarization_dataset(
         summary = ex[summary_field]
 
         sentences = nltk.sent_tokenize(text)
+        # Optionally cap very long documents so more documents contribute
+        if len(sentences) > MAX_SENTENCES_PER_DOC:
+            sentences = sentences[:MAX_SENTENCES_PER_DOC]
         if not sentences:
             continue
 
@@ -92,8 +100,8 @@ def load_and_process_hf_summarization_dataset(
             for sent in sentences
         ]
 
-        # Label the top‑k sentences as important
-        k = min(3, len(sentences))
+        # Label the top‑k sentences as important (increase k for more positives)
+        k = min(5, len(sentences))
         top_indices = sorted(range(len(scores)), key=lambda j: scores[j], reverse=True)[:k]
         labels = [1 if j in top_indices else 0 for j in range(len(sentences))]
 
@@ -274,8 +282,8 @@ def get_training_data(
     hf_config_name=None,
     hf_text_field="document",
     hf_summary_field="summary",
-    hf_split="train[:100]",
-    sample_size=100,
+    hf_split="train[:500]",
+    sample_size=400,
 ):
     """
     Main function to get training data.
@@ -306,6 +314,12 @@ def get_training_data(
 
     if not sentences:
         return load_local_lecture_notes()
+
+    # Print basic label distribution for monitoring
+    num_pos = sum(labels)
+    num_neg = len(labels) - num_pos
+    print(f"Label distribution: {num_pos} positives, {num_neg} negatives "
+          f"({num_pos / max(1, len(labels)):.3f} positive fraction)")
 
     return sentences, labels
 
