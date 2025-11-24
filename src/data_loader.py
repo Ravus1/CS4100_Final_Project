@@ -52,6 +52,57 @@ def load_and_process_cnn_dailymail(sample_size=100):
     print("Finished processing CNN/Daily Mail dataset.")
     return all_sentences, all_labels
 
+def load_and_process_hf_summarization_dataset(
+    dataset_name,
+    config_name=None,
+    text_field="document",
+    summary_field="summary",
+    split="train[:100]"
+):
+    """
+    Generic loader for Hugging Face text+summary datasets.
+
+    - dataset_name: HF datasets ID, e.g. "booksum" or a processed lecture dataset.
+    - config_name: optional HF config name.
+    - text_field: field in the dataset containing the full text / lecture.
+    - summary_field: field containing the gold summary / notes.
+    - split: HF split string, e.g. "train[:100]" for a small subset.
+    """
+    print(f"Loading HF dataset '{dataset_name}' (config={config_name}, split={split})...")
+    if config_name is None:
+        ds = load_dataset(dataset_name, split=split)
+    else:
+        ds = load_dataset(dataset_name, config_name, split=split)
+
+    all_sentences = []
+    all_labels = []
+
+    scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
+
+    for i, ex in enumerate(ds):
+        text = ex[text_field]
+        summary = ex[summary_field]
+
+        sentences = nltk.sent_tokenize(text)
+        if not sentences:
+            continue
+
+        scores = [
+            scorer.score(summary, sent)["rougeL"].fmeasure
+            for sent in sentences
+        ]
+
+        # Label the top‑k sentences as important
+        k = min(3, len(sentences))
+        top_indices = sorted(range(len(scores)), key=lambda j: scores[j], reverse=True)[:k]
+        labels = [1 if j in top_indices else 0 for j in range(len(sentences))]
+
+        all_sentences.extend(sentences)
+        all_labels.extend(labels)
+
+    print(f"Finished processing HF dataset '{dataset_name}'.")
+    return all_sentences, all_labels
+
 def load_local_lecture_notes():
     """
     Loads all local lecture notes, tokenizes them, and provides manually labeled training data.
@@ -216,13 +267,45 @@ def load_local_lecture_notes():
 
     return all_sentences, all_labels
 
-def get_training_data(use_cnn_dailymail=True, sample_size=100):
+def get_training_data(
+    use_cnn_dailymail=True,
+    use_hf_lecture_dataset=False,
+    hf_dataset_name=None,
+    hf_config_name=None,
+    hf_text_field="document",
+    hf_summary_field="summary",
+    hf_split="train[:100]",
+    sample_size=100,
+):
     """
     Main function to get training data.
-    By default, it uses the CNN/Daily Mail dataset.
-    Set use_cnn_dailymail to False to use local lecture notes.
+
+    - use_cnn_dailymail: include CNN/Daily Mail data.
+    - use_hf_lecture_dataset: include an extra HF summarization dataset (e.g. lecture/talk style).
+    - hf_*: options for the HF dataset.
+    - If both are False or no data is loaded, falls back to local lecture notes.
     """
+    sentences = []
+    labels = []
+
     if use_cnn_dailymail:
-        return load_and_process_cnn_dailymail(sample_size=sample_size)
-    else:
+        s_cnn, y_cnn = load_and_process_cnn_dailymail(sample_size=sample_size)
+        sentences.extend(s_cnn)
+        labels.extend(y_cnn)
+
+    if use_hf_lecture_dataset and hf_dataset_name is not None:
+        s_hf, y_hf = load_and_process_hf_summarization_dataset(
+            dataset_name=hf_dataset_name,
+            config_name=hf_config_name,
+            text_field=hf_text_field,
+            summary_field=hf_summary_field,
+            split=hf_split,
+        )
+        sentences.extend(s_hf)
+        labels.extend(y_hf)
+
+    if not sentences:
         return load_local_lecture_notes()
+
+    return sentences, labels
+
