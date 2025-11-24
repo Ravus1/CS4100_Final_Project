@@ -1,0 +1,197 @@
+text,label
+A computer science algorithm is a finite sequence of well-defined instructions for solving a problem.,1
+Some algorithms can be optimized to improve runtime efficiency.,1
+Computer scientists often compare algorithms using Big O notation.,1
+Big O notation describes how an algorithm's runtime scales with input size.,1
+Constant time operations are considered O(1) in complexity analysis.,0
+Linear time algorithms process each input element once.,1
+Binary search is an example of a logarithmic time algorithm.,1
+Logarithmic complexity occurs when a solution space is halved repeatedly.,1
+Hash tables provide average O(1) lookup time when collisions are minimal.,1
+Hash collisions require resolution strategies like chaining or open addressing.,0
+"A stack is a last-in, first-out data structure.",1
+Stacks support two main operations: push and pop.,0
+"A queue follows a first-in, first-out structure.",1
+Priority queues often use heaps for efficient element retrieval.,1
+Heaps maintain a partial ordering structure.,0
+A binary tree consists of nodes with left and right children.,1
+Balanced binary trees ensure logarithmic height growth.,1
+AVL trees maintain balance using rotations after insertions and deletions.,1
+A red-black tree ensures that no path is more than twice as long as any other.,1
+Tree rotations preserve the in-order traversal of nodes.,0
+Graph theory is fundamental to modeling pairwise relationships.,1
+Directed graphs contain edges with orientation.,0
+Breadth-first search explores a graph level by level.,1
+Depth-first search explores as far as possible along a branch.,1
+BFS is typically used for finding the shortest path in unweighted graphs.,1
+DFS can be used for cycle detection.,1
+Adjacency lists provide a space-efficient representation for sparse graphs.,1
+Adjacency matrices provide constant-time edge checks at the cost of more space.,0
+Dynamic programming solves problems by storing solutions to subproblems.,1
+Memoization stores results to avoid redundant computation.,1
+Tabulation builds solutions iteratively using a bottom-up approach.,1
+The Fibonacci sequence is a classic example for demonstrating dynamic programming.,0
+Greedy algorithms make the best local choice at each step.,1
+"However, greedy choices do not always produce optimal global solutions.",1
+Dijkstra's algorithm finds the shortest path in a weighted graph with non-negative edges.,1
+Bellman-Ford can handle negative edge weights but is slower.,1
+Machine learning is a subfield of artificial intelligence.,1
+Supervised learning requires labeled data.,1
+Unsupervised learning identifies structure in unlabeled data.,1
+Neural networks are computational models inspired by biological neurons.,1
+A perceptron is the simplest neural network unit.,1
+Activation functions introduce non-linearity into neural networks.,1
+ReLU is one of the most widely used activation functions in deep learning.,1
+Backpropagation updates network weights by computing gradients.,1
+Gradient descent iteratively reduces loss by adjusting weights.,1
+Learning rate controls the magnitude of updates during gradient descent.,1
+Overfitting occurs when a model learns noise in the training data.,1
+Regularization methods help reduce overfitting.,1
+Dropout randomly disables neurons during training.,1
+Batch normalization reduces internal covariate shift.,1
+Convolutional neural networks are specialized for image data.,1
+Pooling operations reduce spatial dimensionality.,1
+Recurrent neural networks process sequences of variable length.,1
+Long short-term memory networks address the vanishing gradient problem.,1
+A database stores and manages structured information.,1
+SQL is a declarative language used to query relational databases.,1
+The SELECT command retrieves specific columns from a table.,0
+JOIN operations combine rows across multiple tables.,1
+Indexes speed up data retrieval by organizing values efficiently.,1
+Transactions ensure consistency through ACID properties.,1
+Atomicity ensures a transaction is all-or-nothing.,0
+Distributed systems coordinate computation across multiple machines.,1
+Fault tolerance ensures a system continues operating despite failures.,1
+Replication duplicates data to increase reliability.,1
+Consensus algorithms allow distributed nodes to agree on a value.,1
+MapReduce divides computation into map and reduce steps.,1
+Cloud computing provides scalable on-demand resources.,1
+Virtual machines emulate physical hardware.,1
+Containers package applications with minimal overhead.,1
+APIs allow software applications to communicate.,1
+REST APIs rely on stateless communication.,1
+HTTP is the foundation of web communication.,0
+Cryptography secures data using mathematical transformations.,1
+Symmetric encryption uses the same key for encryption and decryption.,1
+Asymmetric encryption uses public and private key pairs.,1
+Digital signatures verify data authenticity.,1
+Computer networks enable communication between devices.,1
+Packets contain chunks of transmitted data.,0
+TCP ensures reliable delivery through acknowledgments and retransmissions.,1
+UDP provides faster but unreliable message delivery.,1
+IP addresses uniquely identify devices on a network.,1
+Routing algorithms determine how packets travel across networks.,1
+The OSI model conceptualizes network communication in seven layers.,1
+Operating systems manage hardware and software resources.,1
+The kernel controls core system functions.,1
+Process scheduling determines how CPU time is allocated.,1
+Memory management includes allocation and deallocation strategies.,1
+File systems organize and retrieve stored data.,1
+Compilers translate high-level code into machine instructions.,1
+Lexical analysis breaks code into tokens.,0
+Parsing constructs a syntax tree from tokens.,1
+Code optimization improves execution efficiency.,1
+Software engineering focuses on building reliable applications.,1
+Unit tests validate small components of code.,1
+Version control systems track changes across collaborators.,1
+Git uses commits to record snapshots of a project.,0
+Agile methodologies emphasize iterative development.,1
+Sprints divide work into short cycles.,0
+Psycholinguistics studies how humans acquire and process language.,1
+"The mental lexicon stores word meanings, pronunciations, and relationships.",1
+Language comprehension involves decoding sounds and linking them to meaning.,1
+Speech perception requires distinguishing phonemes across contexts.,1
+Coarticulation causes speech sounds to blend together.,0
+Categorical perception allows listeners to classify sounds into phoneme categories.,1
+Infants demonstrate early sensitivity to phonemic contrasts.,1
+"Over time, perceptual narrowing reduces sensitivity to non-native contrasts.",1
+Working memory is crucial for maintaining linguistic information.,1
+The phonological loop temporarily stores speech-based content.,1
+Semantic memory stores factual knowledge.,1
+Pragmatics focuses on how context shapes language use.,1
+Ambiguous sentences require contextual cues for disambiguation.,1
+Garden-path sentences initially lead readers toward an incorrect interpretation.,1
+Eye-tracking reveals moment-to-moment language processing.,1
+Lexical access is the process of retrieving word information.,1
+High-frequency words are recognized more quickly than low-frequency ones.,1
+Semantic priming speeds up recognition of related words.,1
+Syntactic parsing organizes words into hierarchical structures.,1
+Broca's area is involved in language production.,1
+Wernicke's area is associated with comprehension.,1
+Aphasias are disorders resulting from damage to language regions.,1
+Broca's aphasia impairs speech fluency.,1
+Wernicke's aphasia impairs semantic coherence.,1
+Children learn language through a mix of exposure and innate mechanisms.,1
+Overregularization errors reflect rule-based learning.,1
+Morphology studies how words are formed from smaller units.,1
+Phonology focuses on the sound patterns of language.,1
+Syntax refers to the rules governing sentence structure.,1
+Semantics deals with meaning.,1
+Pragmatic development continues through adolescence.,0
+Language acquisition is surprisingly rapid given noisy input.,1
+Distributional learning allows infants to track statistical regularities.,1
+Joint attention supports vocabulary growth.,1
+Fast mapping refers to rapid word-meaning associations.,1
+Speech production requires coordinated motor planning.,1
+The mental timeline organizes events spatially.,1
+Metaphor comprehension involves mapping concepts across domains.,1
+Conceptual metaphor theory proposes systematic links between abstract and concrete domains.,1
+Memory retrieval depends on cue strength.,1
+Interference can disrupt recall performance.,1
+Working memory capacity varies across individuals.,1
+Chunking improves memory efficiency.,1
+Dual-process theories distinguish automatic and controlled cognition.,1
+Heuristics are mental shortcuts used in decision-making.,1
+The availability heuristic relies on how easily examples come to mind.,1
+Confirmation bias leads people to favor information that supports their beliefs.,1
+Cognitive load affects task performance.,1
+Language influences thought in limited but meaningful ways.,1
+The Sapir-Whorf hypothesis proposes that language shapes cognition.,1
+Color naming studies reveal cross-linguistic differences in perception.,1
+Spatial reasoning varies across language communities.,1
+Sentence context shapes lexical predictions.,1
+Predictive processing models suggest the brain anticipates upcoming words.,1
+Eye-movement regressions signal processing difficulty.,0
+Neuroimaging reveals brain activation patterns during comprehension.,1
+EEG measures electrical activity with high temporal resolution.,1
+ERP components reflect specific cognitive processes.,1
+The N400 component is sensitive to semantic anomalies.,1
+The P600 component responds to syntactic violations.,1
+Speech segmentation requires identifying word boundaries in fluent speech.,1
+Prosody helps listeners interpret emotional tone and emphasis.,1
+Discourse comprehension integrates ideas across sentences.,1
+Topic maintenance requires working memory and attention.,1
+"Figurative language includes metaphors, idioms, and sarcasm.",1
+Listeners use context to resolve referential ambiguity.,1
+Turn-taking rules vary across cultures.,0
+Language production errors reveal internal processes.,1
+Tip-of-the-tongue states occur when retrieval nearly succeeds.,1
+Speech errors often swap or misorder phonemes.,1
+Gesture supports communication and learning.,1
+Iconic gestures visually represent aspects of meaning.,0
+Sign languages have full linguistic structure.,1
+Deaf infants exposed to sign show typical language development.,1
+Reading comprehension involves decoding and integration.,1
+The phonics approach emphasizes sound-letter correspondence.,1
+The whole-language approach emphasizes meaning-based practice.,0
+Dyslexia affects phonological processing.,1
+Second-language learning varies with age and exposure.,1
+Bilingualism can strengthen cognitive flexibility.,1
+Code-switching reflects proficiency and contextual demands.,1
+Language attrition occurs when a language is not regularly used.,1
+Semantic networks represent conceptual relationships.,1
+Nodes in a network are activated based on related concepts.,1
+Spreading activation helps explain priming effects.,1
+Concepts can be organized hierarchically.,1
+Prototype theory suggests categories are centered around ideal examples.,1
+The classical view defines categories by necessary features.,0
+Embodied cognition proposes that thinking relies on perceptual and motor systems.,1
+Mirror neurons may support imitation and language learning.,1
+Emotion influences cognitive processing.,1
+Arousal affects memory strength.,1
+Motivation shapes attention and learning.,1
+Working memory load limits syntactic processing capabilities.,1
+Comprehenders use world knowledge to predict outcomes.,1
+Ambiguity resolution requires integrating multiple constraints.,1
+Speech alignment shows how people adapt their speaking style.,1
+Language change occurs gradually through usage-based processes.,1
