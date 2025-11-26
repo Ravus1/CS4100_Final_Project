@@ -4,7 +4,7 @@ import os
 from datasets import load_dataset
 from rouge_score import rouge_scorer
 
-# Download 'punkt' if not available
+
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
@@ -19,7 +19,7 @@ def load_and_process_cnn_dailymail(sample_size=400):
     with the summary.
     """
     print("Loading CNN/Daily Mail dataset...")
-    # Load a subset of the dataset for demonstration purposes
+
     dataset = load_dataset("cnn_dailymail", "3.0.0", split=f"train[:{sample_size}]")
     
     all_sentences = []
@@ -36,16 +36,16 @@ def load_and_process_cnn_dailymail(sample_size=400):
         summary_text = example['highlights']
         
         sentences = nltk.sent_tokenize(article_text)
-        # Optionally cap very long articles so more documents contribute
+
         if len(sentences) > MAX_SENTENCES_PER_DOC:
             sentences = sentences[:MAX_SENTENCES_PER_DOC]
         if not sentences:
             continue
 
-        # Calculate ROUGE scores for each sentence against the summary
+        
         scores = [scorer.score(summary_text, sent)['rougeL'].fmeasure for sent in sentences]
         
-        # Label more sentences per document as important (increase top-k)
+
         k = min(5, len(sentences))
         top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
         
@@ -100,7 +100,7 @@ def load_and_process_hf_summarization_dataset(
             for sent in sentences
         ]
 
-        # Label the top‑k sentences as important (increase k for more positives)
+        
         k = min(5, len(sentences))
         top_indices = sorted(range(len(scores)), key=lambda j: scores[j], reverse=True)[:k]
         labels = [1 if j in top_indices else 0 for j in range(len(sentences))]
@@ -119,7 +119,6 @@ def load_local_lecture_notes():
     all_sentences = []
     all_labels = []
 
-    # A dictionary mapping filenames to their important sentences for labeling.
     important_sentences_map = {
         "lecture_notes.txt": [
             "However, many real-life problems do not focus on the specific path taken to reach the goal.",

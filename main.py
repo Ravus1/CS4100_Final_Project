@@ -7,6 +7,7 @@ from sklearn.metrics import classification_report
 from datasets import load_dataset
 from rouge_score import rouge_scorer
 import os
+# used AI for debugging, gereating data,syntax, etc.
 
 def load_single_lecture_note(file_path):
     """Loads a single lecture note for summarization."""
@@ -88,6 +89,13 @@ def main():
     y_pred = summary_model.predict(X_test)
     print(classification_report(y_test, y_pred))
 
+    # 5b. Report internal RandomForest out-of-bag (OOB) score as an additional metric.
+    # This is an internal estimate of generalization error computed using samples
+    # not included in each tree's bootstrap sample.
+    oob = summary_model.oob_score()
+    if oob is not None:
+        print(f"OOB score (RandomForest internal estimate): {oob:.4f}")
+
     # 6. Create a summarizer for document-level evaluation
     summarizer = Summarizer(model=summary_model, preprocessor=preprocessor)
 
@@ -123,8 +131,9 @@ def main():
         print("No AMI validation examples were evaluated.")
 
     # 8. (Optional) Summarize one of our local lecture notes for a manual check
-    # Change this to the unsupervised learning notes to inspect that summary.
-    lecture_file_to_summarize = "data/lecture_notes_unsupervised_learning.txt"
+    # Now summarize the deep learning for vision notes.
+    
+    lecture_file_to_summarize = "data/lecture_notes_model_evaluation.txt"
     print(f"\nLoading '{lecture_file_to_summarize}' for a manual summarization check...")
     lecture_to_summarize = load_single_lecture_note(lecture_file_to_summarize)
 
