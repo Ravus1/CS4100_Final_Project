@@ -6,8 +6,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from datasets import load_dataset
 from rouge_score import rouge_scorer
+from joblib import dump, load
+import argparse
 import os
-# used AI for debugging, gereating data,syntax, etc.
+# used AI for debugging, gereating synthetic data,syntax, etc.
 
 def load_single_lecture_note(file_path):
     """Loads a single lecture note for summarization."""
@@ -18,12 +20,19 @@ def load_single_lecture_note(file_path):
         print(f"Error: The file at {file_path} was not found.")
         return ""
 
-def main():
+ARTIFACT_DIR = "artifacts"
+MODEL_PATH = os.path.join(ARTIFACT_DIR, "summary_model.joblib")
+VECTORIZER_PATH = os.path.join(ARTIFACT_DIR, "tfidf_preprocessor.joblib")
+
+
+def train_main() -> None:
     """
-    Main function to run the summarization pipeline.
+    Train the summarization model and save the trained artifacts to disk.
+    This step loads the data, performs a train split only, and persists the
+    TF-IDF vectorizer and RandomForest model.
     """
-    # 1. Load and prepare training data
-    # Use CNN/Daily Mail plus an additional lecture-style dataset (AMI Corpus)
+    os.makedirs(ARTIFACT_DIR, exist_ok=True)
+
     print("Loading training data...")
     sentences, labels = get_training_data(
         use_cnn_dailymail=True,
@@ -35,36 +44,20 @@ def main():
         sample_size=400,
     )
 
-    # 1b. (Optional) Add another HF summarization dataset such as SAMSum.
-    # NOTE: Disabled for now because 'samsum' is not accessible in this environment.
-    # If you later add another dataset, you can re-enable this pattern:
-    #
-    # print("\nLoading additional HF dataset 'samsum' (dialogue summarization)...")
-    # sam_sentences, sam_labels = load_and_process_hf_summarization_dataset(
-    #     dataset_name="samsum",
-    #     text_field="dialogue",
-    #     summary_field="summary",
-    #     split="train[:2000]",
-    # )
-    # sentences.extend(sam_sentences)
-    # labels.extend(sam_labels)
-    #
-    # # Re-print label distribution after adding the extra dataset
-    # num_pos = sum(labels)
-    # num_neg = len(labels) - num_pos
-    # print(
-    #     f"Combined label distribution (after extra HF dataset): "
-    #     f"{num_pos} positives, {num_neg} negatives "
-    #     f"({num_pos / max(1, len(labels)):.3f} positive fraction)"
-    # )
-
     if not sentences:
         print("No training data found. Exiting.")
         return
 
-    # 2. Train/test split for sentence-level classification
-    print("Splitting data into train and test sets...")
-    X_train_text, X_test_text, y_train, y_test = train_test_split(
+    num_pos = sum(labels)
+    total = len(labels)
+    print(
+        f"Final label distribution: {num_pos} positives, {total} total "
+        f"({num_pos / max(1, total):.3f} positives)",
+    )
+
+    # Train/test split, but here we only use the training portion for fitting.
+    print("Splitting data into train and test sets (for later evaluation)...")
+    X_train_text, _, y_train, _ = train_test_split(
         sentences,
         labels,
         test_size=0.2,
@@ -72,34 +65,69 @@ def main():
         stratify=labels,
     )
 
-    # 3. Preprocess the training data (fit on train only)
     print("Preprocessing data (fitting TF-IDF on training set)...")
     preprocessor = TextPreprocessor()
     X_train = preprocessor.fit_transform(X_train_text)
-    X_test = preprocessor.transform(X_test_text)
 
-    # 4. Train the model
     print("Training model...")
     summary_model = SummaryModel()
     summary_model.train(X_train, y_train)
     print("Model training complete.")
 
-    # 5. Evaluate sentence-level performance
-    print("Evaluating sentence-level classification performance on test set...")
-    y_pred = summary_model.predict(X_test)
-    print(classification_report(y_test, y_pred))
-
-    # 5b. Report internal RandomForest out-of-bag (OOB) score as an additional metric.
-    # This is an internal estimate of generalization error computed using samples
-    # not included in each tree's bootstrap sample.
     oob = summary_model.oob_score()
     if oob is not None:
         print(f"OOB score (RandomForest internal estimate): {oob:.4f}")
 
-    # 6. Create a summarizer for document-level evaluation
+    dump(preprocessor, VECTORIZER_PATH)
+    dump(summary_model, MODEL_PATH)
+    print(f"Saved trained model to {MODEL_PATH} and vectorizer to {VECTORIZER_PATH}.")
+
+
+def test_main() -> None:
+    """
+    Load a previously trained model and vectorizer and evaluate on the held‑out
+    test split, plus document‑level ROUGE and a sample lecture summary.
+    """
+    if not (os.path.exists(MODEL_PATH) and os.path.exists(VECTORIZER_PATH)):
+        print("Trained artifacts not found. Run `python main.py --mode train` first.")
+        return
+
+    print("Loading trained artifacts...")
+    preprocessor: TextPreprocessor = load(VECTORIZER_PATH)
+    summary_model: SummaryModel = load(MODEL_PATH)
+
+    print("Loading data and rebuilding train/test split for evaluation...")
+    sentences, labels = get_training_data(
+        use_cnn_dailymail=True,
+        use_hf_lecture_dataset=True,
+        hf_dataset_name="TanveerAman/AMI-Corpus-Text-Summarization",
+        hf_text_field="Dialogue",
+        hf_summary_field="Summaries",
+        hf_split="train[:500]",
+        sample_size=400,
+    )
+
+    if not sentences:
+        print("No data available for evaluation.")
+        return
+
+    _, X_test_text, _, y_test = train_test_split(
+        sentences,
+        labels,
+        test_size=0.2,
+        random_state=42,
+        stratify=labels,
+    )
+
+    X_test = preprocessor.transform(X_test_text)
+
+    print("Evaluating sentence-level classification performance on test set...")
+    y_pred = summary_model.predict(X_test)
+    print(classification_report(y_test, y_pred))
+
     summarizer = Summarizer(model=summary_model, preprocessor=preprocessor)
 
-    # 7. Document-level evaluation using AMI validation split
+    # Document-level evaluation using AMI validation split
     print("\nLoading AMI validation split for document-level evaluation...")
     ami_val = load_dataset(
         "TanveerAman/AMI-Corpus-Text-Summarization",
@@ -130,9 +158,7 @@ def main():
     else:
         print("No AMI validation examples were evaluated.")
 
-    # 8. (Optional) Summarize one of our local lecture notes for a manual check
-    # Now summarize the deep learning for vision notes.
-    
+    # Manual summarization of a local lecture note
     lecture_file_to_summarize = "data/lecture_notes_model_evaluation.txt"
     print(f"\nLoading '{lecture_file_to_summarize}' for a manual summarization check...")
     lecture_to_summarize = load_single_lecture_note(lecture_file_to_summarize)
@@ -151,4 +177,16 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mode",
+        choices=["train", "test"],
+        default="train",
+        help="Run training (`train`) or evaluation/testing (`test`).",
+    )
+    args = parser.parse_args()
+
+    if args.mode == "train":
+        train_main()
+    else:
+        test_main()

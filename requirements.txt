@@ -2,3 +2,4 @@ scikit-learn
 nltk
 datasets
 rouge-score
+joblib
