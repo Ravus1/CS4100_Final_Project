@@ -1,0 +1,11 @@
+{
+    "test_loss": 1.2889595031738281,
+    "test_rouge1": 0.24857205582469785,
+    "test_rouge2": 0.10332683819417443,
+    "test_rougeL": 0.2009662788874681,
+    "test_rougeLsum": 0.20110970192104724,
+    "test_gen_len": 20.287,
+    "test_runtime": 201.1239,
+    "test_samples_per_second": 9.944,
+    "test_steps_per_second": 2.486
+}
