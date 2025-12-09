@@ -16,7 +16,7 @@ def split_into_sentences(text):
 
 class TextPreprocessor:
     def __init__(self):
-        self.vectorizer = TfidfVectorizer()
+        self.vectorizer = TfidfVectorizer(stop_words="english")
 
     def fit_transform(self, sentences):
         """Fits the vectorizer to the sentences and transforms them into a matrix of TF-IDF features."""

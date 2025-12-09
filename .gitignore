@@ -117,6 +117,3 @@ dmypy.json
 
 # Model artifacts (do not commit)
 artifacts/
-
-# Large dataset files
-data/*.parquet

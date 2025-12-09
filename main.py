@@ -85,7 +85,6 @@ def generate_groq_summary(text: str, max_tokens: int = 256) -> str:
             timeout=60,
         )
         if response.status_code != 200:
-            # Print full error body to understand what's wrong (model name, payload, etc.)
             print("Groq error details:", response.status_code, response.text)
             response.raise_for_status()
         data = response.json()

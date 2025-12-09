@@ -12,7 +12,6 @@ class SummaryModel:
         )
 
     def train(self, X_train, y_train):
-        """Trains the RandomForestClassifier model."""
         self.model.fit(X_train, y_train)
 
     def predict(self, X_test):
