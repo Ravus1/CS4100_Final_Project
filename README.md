@@ -284,11 +284,28 @@ This uses the environment set up in class. If packages/dependences are not insta
 
 1. Navigate to the project's home directory.
 
-2. Run clean_preprocess.py using the YouTube lecture csv in the cited_datasets directory and the csv containing the handwritten summaries in the cleaned_datasets directory. (i.e. # python clean_preprocess.py). This cleans and preprocesses the data, generating pickle files for later use.
+2. Run clean_preprocess.py using the YouTube lecture csv in the cited_datasets directory and the csv containing the handwritten summaries in the cleaned_datasets directory.
+   
+   ```bash
+python clean_preprocess.py
+```
 
-3. To run the improved logistic regression model and the FFN, run log_reg_and_ffn.py using the pickle files found in the pkl_files directory (i.e. # python log_reg_and_ffn.py). If you want to use your locally generated files from the previous step, modify the source code and change dependencies accordingly, or replace the existing pkl files.
+This cleans and preprocesses the data, generating pickle files for later use.
 
-4. Run rouge_and_summarization.py using the respective pickle, npy and pth files found in their respective directories (i.e. # python rouge_and_summarization.py). Again, if you want to use your locally generated files form the previous step, modify the source code and change dependencies accordingly, or replace existing files.
+4. To run the improved logistic regression model and the FFN, run log_reg_and_ffn.py using the pickle files found in the pkl_files directory
+
+```bash
+python log_reg_and_ffn.py
+```
+
+If you want to use your locally generated files from the previous step, modify the source code and change dependencies accordingly, or replace the existing pkl files.
+
+5. Run rouge_and_summarization.py using the respective pickle, npy and pth files found in their respective directories
+
+``` bash
+python rouge_and_summarization.py
+```
+Again, if you want to use your locally generated files form the previous step, modify the source code and change dependencies accordingly, or replace existing files.
 
 ---
 
