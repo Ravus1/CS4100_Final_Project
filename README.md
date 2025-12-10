@@ -276,4 +276,8 @@ This will:
 6. **(Optional) Fine‑tune BART on CNN/DailyMail**
    - Train with `llm_cnn.py --mode train ...`, then evaluate with `--mode eval`.
 
+---
+
+## 8. Cited Dataset for YouTube Lecture Transcripts
+https://www.kaggle.com/datasets/jfcaro/5000-transcripts-of-youtube-ai-related-videos
 
